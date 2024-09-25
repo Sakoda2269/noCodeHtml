@@ -2,10 +2,12 @@
 import {useContext, useState, useRef, useEffect} from "react";
 import DraggingElementContext from "./contexts/draggingElementContext";
 import ElementsContext from "./contexts/elementsContext";
+import SelectingElementContext from "./contexts/selectingElementContext";
 
 function DropArea(props) {
 
     const {dragging, setDragging} = useContext(DraggingElementContext);
+    const {selecting, setSelecting} = useContext(SelectingElementContext)
     const {elements, setElements} = useContext(ElementsContext);
 
     const ref = useRef(null);
@@ -20,30 +22,36 @@ function DropArea(props) {
 
     const onDrop = (event) => {
         event.preventDefault();
-        let element= dragging.elem;
-        let props = dragging.props;
-        let text = dragging.text;
-        let id = dragging.id;
-        let mouseX = event.pageX;
-        let mouseY = event.pageY;
-        let offsetX = dragging.x;
-        let offsetY = dragging.y;
-        let x = mouseX - offsetX - pos.left;
-        let y = mouseY - offsetY - pos.top;
+        if (Object.keys(dragging).length !== 0) {
+            let element= dragging.elem;
+            let props = dragging.props;
+            let text = dragging.text;
+            let id = dragging.id;
+            let bounds = dragging.bounds;
+            let mouseX = event.pageX;
+            let mouseY = event.pageY;
+            let offsetX = dragging.x;
+            let offsetY = dragging.y;
+            let x = mouseX - offsetX - pos.left;
+            let y = mouseY - offsetY - pos.top;
 
-        props.style["left"] = `${x}px`;
-        props.style["top"] = `${y}px`;
+            bounds["left"] = `${x}px`;
+            bounds["top"] = `${y}px`;
 
-        setElements( elements => (
-            {
-                ...elements,
-                [id]:{
-                    element: element,
-                    props: props,
-                    text: text,
+            setElements( elements => (
+                {
+                    ...elements,
+                    [id]:{
+                        element: element,
+                        props: props,
+                        text: text,
+                        bounds: bounds
+                    }
                 }
-            }
-        ));
+            ));
+            setDragging({});
+        }
+        
 
     }
 
@@ -58,7 +66,9 @@ function DropArea(props) {
             ref={ref}
         > 
             {Object.entries(elements).map(([id, Component]) => (
-                <Component.element props={Component.props} text={Component.text} id={id} key={id}/>
+                <span key={id}>
+                    <Component.element props={Component.props} text={Component.text} bounds={Component.bounds} id={id}/>
+                </span>
             ))}
 
         </div>

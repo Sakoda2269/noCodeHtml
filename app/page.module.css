@@ -12,3 +12,16 @@
   display: flex;
   justify-content: center; 
 }
+
+.hoverLtoR:hover {
+  cursor: nwse-resize;
+}
+
+.hoverRtoL:hover {
+  cursor: nesw-resize;
+}
+
+.hoverMove:hover {
+  cursor: move;
+}
+

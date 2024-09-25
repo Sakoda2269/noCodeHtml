@@ -11,6 +11,7 @@ function PropertyArea() {
     const [tabKey, setTabKey] = useState("general");
     const [general, setGeneral] = useState({});
     const [styles, setStyles] = useState({});
+    const [bounds, setBounds] = useState({});
 
     useEffect(() => {
         if (elements[selecting]) {
@@ -20,8 +21,9 @@ function PropertyArea() {
                 text: elements[selecting]["text"]
             });
             setStyles(elements[selecting]["props"]["style"]);
+            setBounds(elements[selecting]["bounds"]);
         }
-    }, [selecting])
+    }, [selecting, elements])
 
     const onChangeTab = (k) => {
         setTabKey(k);
@@ -89,6 +91,23 @@ function PropertyArea() {
         })
     }
 
+    const onBoundsChange = (event) => {
+        setBounds({
+            ...bounds,
+            [event.target.id]: event.target.value
+        });
+        setElements({
+            ...elements,
+            [selecting]:{
+                ...elements[selecting],
+                ["bounds"]:{
+                    ...elements[selecting]["bounds"],
+                    [event.target.id]: event.target.value
+                }
+            }
+        })
+    }
+
     const addStyle = (event) => {
         
     }
@@ -113,6 +132,18 @@ function PropertyArea() {
                             ))}
                         </div>
                         ) : (<></>)}
+                </Tab>
+                <Tab eventKey="bounds" title="配置">
+                    {bounds ? (
+                        <div>
+                            {Object.entries(bounds).map(([key, value]) => (
+                                <span key={key}>
+                                    <label className="form-label">{key}</label>
+                                    <input type="text" id={key} className="form-control" value={value} onChange={onBoundsChange}/>
+                                </span>
+                            ))}
+                        </div>
+                    ) : (<>a</>)}
                 </Tab>
                 <Tab eventKey="style" title="スタイル">
                     {styles ? (
