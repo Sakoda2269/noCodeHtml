@@ -22,6 +22,10 @@ function PropertyArea() {
             });
             setStyles(elements[selecting]["props"]["style"]);
             setBounds(elements[selecting]["bounds"]);
+        } else {
+            setGeneral({});
+            setStyles({});
+            setBounds({});
         }
     }, [selecting, elements])
 

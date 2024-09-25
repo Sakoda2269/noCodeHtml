@@ -59,10 +59,15 @@ function DropArea(props) {
         event.preventDefault();
     }
 
+    const onClick = (event) => {
+        setSelecting("");
+    }
+
     return (
         <div style={{ width: '100%', height: '100%', backgroundColor: 'lightblue', position: "relative"}}
             onDrop={onDrop}
             onDragOver={dragOver}
+            onClick={onClick}
             ref={ref}
         > 
             {Object.entries(elements).map(([id, Component]) => (

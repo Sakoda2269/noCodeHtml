@@ -63,6 +63,7 @@ function Base({id_in, bounds_in, children}) {
 
     const onClick = (event) => {
         event.preventDefault();
+        event.stopPropagation()
         setSelecting(btnId);
     }
 
@@ -271,7 +272,8 @@ function ButtonItem() {
         let mouseX = event.pageX - bound.left;
         let mouseY = event.pageY - bound.top;
         let style = {
-            color:"white"
+            color:"white",
+            fontSize: "16px"
         }
         let bounds = {
             width: `${bound.width}px`,
@@ -320,7 +322,8 @@ function TextInputItem() {
         let mouseX = event.pageX - bound.left;
         let mouseY = event.pageY - bound.top;
         let style = {
-            color:"black"
+            color:"black",
+            fontSize: "16px"
         }
         let bounds = {
             width: `${bound.width}px`,
@@ -368,7 +371,8 @@ function TextLabelItem() {
         let mouseX = event.pageX - bound.left;
         let mouseY = event.pageY - bound.top;
         let style = {
-            color:"black"
+            color:"black",
+            fontSize: "16px"
         }
         let bounds = {
             width: `${bound.width}px`,
