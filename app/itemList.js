@@ -11,6 +11,10 @@ function ItemList(props) {
         <div className={`${styles.center}`}>
             <div className="row" style={{ width: '80%', margin: '0 auto'}}>
                 <ButtonItem />
+                <p></p>
+                <TextInputItem />
+                <p></p>
+                <TextLabelItem />
             </div>
         </div>
     )
@@ -212,7 +216,43 @@ function Button({props, bounds, text, id}){
     )
 }
 
-function ButtonItem(props) {
+function TextInput({props, bounds, text, id}) {
+    const {["style"]: value, ...rect} = props;
+    const style = {
+        ...value,
+        ["position"]: "relative",
+        ["left"]: "1px",
+        ["top"]: "1px",
+        ["width"]: bounds["width"],
+        ["height"]: bounds["height"],
+        ["cursor"]: "inherit"
+    };
+    return (
+        <Base id_in={id} bounds_in={bounds}>
+            <input type="text" {...rect} style={style} readOnly="readonly" value={text}/>
+        </Base>
+    )
+}
+
+function TextLabel({props, bounds, text, id}) {
+    const {["style"]: value, ...rect} = props;
+    const style = {
+        ...value,
+        ["position"]: "relative",
+        ["left"]: "1px",
+        ["top"]: "1px",
+        ["width"]: bounds["width"],
+        ["height"]: bounds["height"],
+        ["cursor"]: "inherit"
+    };
+    return (
+        <Base id_in={id} bounds_in={bounds}>
+            <label {...rect} style={style}>{text}</label>
+        </Base>
+    )
+}
+
+function ButtonItem() {
 
     const {dragging, setDragging} = useContext(DraggingElementContext);
     const [bound, setBound] = useState({width: 0, height: 0, left: 0, top: 0});
@@ -240,7 +280,6 @@ function ButtonItem(props) {
             left: "0px"
         }
 
-
         setDragging({
             elem: Button,
             props:{
@@ -259,6 +298,104 @@ function ButtonItem(props) {
             onDragStart={onDragStart}
             ref={ref}
         >ボタン</button>
+    )
+}
+
+function TextInputItem() {
+
+    const {dragging, setDragging} = useContext(DraggingElementContext);
+    const [bound, setBound] = useState({width: 0, height: 0, left: 0, top: 0});
+    const ref = useRef(null);
+
+    useEffect(() => {
+        if (ref.current) {
+            const rect = ref.current.getBoundingClientRect();
+            setBound({width: rect.width, height: rect.height, left: rect.left, top: rect.top});
+        }
+    }, []);
+
+    const onDragStart = (event) => {
+
+        let uuid = self.crypto.randomUUID();
+        let mouseX = event.pageX - bound.left;
+        let mouseY = event.pageY - bound.top;
+        let style = {
+            color:"black"
+        }
+        let bounds = {
+            width: `${bound.width}px`,
+            height: `${bound.height}px`,
+            top: "0px",
+            left: "0px"
+        }
+
+        setDragging({
+            elem: TextInput,
+            props:{
+                className: "form-control", style: style
+            },
+            text: "入力欄",
+            id: uuid,
+            bounds: bounds,
+            x: mouseX,
+            y: mouseY
+        })
+    }
+
+    return (
+        <input type="text" className="form-control" draggable="true" readOnly="readonly" value="入力欄"
+            onDragStart={onDragStart}
+            ref={ref}/>
+    )
+}
+
+function TextLabelItem() {
+
+    const {dragging, setDragging} = useContext(DraggingElementContext);
+    const [bound, setBound] = useState({width: 0, height: 0, left: 0, top: 0});
+    const ref = useRef(null);
+
+    useEffect(() => {
+        if (ref.current) {
+            const rect = ref.current.getBoundingClientRect();
+            setBound({width: rect.width, height: rect.height, left: rect.left, top: rect.top});
+        }
+    }, []);
+
+    const onDragStart = (event) => {
+
+        let uuid = self.crypto.randomUUID();
+        let mouseX = event.pageX - bound.left;
+        let mouseY = event.pageY - bound.top;
+        let style = {
+            color:"black"
+        }
+        let bounds = {
+            width: `${bound.width}px`,
+            height: `${bound.height}px`,
+            top: "0px",
+            left: "0px"
+        }
+
+        setDragging({
+            elem: TextLabel,
+            props:{
+                className: "", style: style
+            },
+            text: "テキストラベル",
+            id: uuid,
+            bounds: bounds,
+            x: mouseX,
+            y: mouseY
+        })
+    }
+
+    return (
+        <label className={styles.text_border} draggable="true"
+            onDragStart={onDragStart}
+            ref={ref}>
+            テキストラベル
+        </label>
     )
 }
 
