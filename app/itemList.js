@@ -1,5 +1,5 @@
 "use client"
-import {useState, useEffect, uesContext, useContext, useRef} from "react";
+import React, {useState, useEffect, uesContext, useContext, useRef} from "react";
 import styles from "./page.module.css";
 import DraggingElementContext from "./contexts/draggingElementContext";
 import SelectingElementContext from "./contexts/selectingElementContext";
@@ -16,15 +16,13 @@ function ItemList(props) {
     )
 }
 
-function Button(props_in) {
+function Base({id_in, bounds_in, children}) {
 
     const {selecting, setSelecting} = useContext(SelectingElementContext);
     const {elements, setElements} = useContext(ElementsContext);
-    const [btnId, setBtnId] = useState(props_in.id);
+    const [btnId, setBtnId] = useState(id_in);
     const [mousePos, setMousePos] = useState({x: 0, y: 0})
-    const text = props_in.text;
-    const props = props_in.props;
-    const bounds = props_in.bounds;
+    const bounds = bounds_in;
 
     let x = Number(bounds["left"].slice(0, -2));
     let y = Number(bounds["top"].slice(0, -2));
@@ -89,18 +87,6 @@ function Button(props_in) {
         })
     }
 
-    const {["style"]: value, ...rect} = props
-
-    const style = {
-        ...value,
-        ["position"]: "relative",
-        ["left"]: "1px",
-        ["top"]: "1px",
-        ["width"]: bounds["width"],
-        ["height"]: bounds["height"],
-        ["cursor"]: "inherit"
-    }
-
     const onSizeChangeStart = (event) => {
         setMousePos({x: event.pageX, y: event.pageY})
     }
@@ -110,12 +96,6 @@ function Button(props_in) {
         let mouseY = event.pageY;
         let dx = mouseX - mousePos.x;
         let dy = mouseY - mousePos.y;
-        console.log({
-            ["top"]: `${y + dy}px`,
-            ["left"]: `${x + dx}px`,
-            ["width"]: `${w + dx}px`,
-            ["height"]: `${h + dy}px`
-        });
         setElements({
             ...elements,
             [selecting]:{
@@ -188,9 +168,7 @@ function Button(props_in) {
             <span style={{position: "absolute", left:bounds["left"], top: bounds["top"]}}>
                 <div onClick={onClick} id={btnId} style={topStyle[selecting == btnId]} onDragStart={onDragStart} 
                 onDragEnd={onDragEnd} draggable={`${selecting==btnId}`}>
-                    <button {...rect} style={style}>
-                        {text}
-                    </button>
+                    {children}
                 </div>
             </span>
             {selecting==btnId ? (
@@ -214,6 +192,24 @@ function Button(props_in) {
         </span>
     )
 
+}
+
+function Button({props, bounds, text, id}){
+    const {["style"]: value, ...rect} = props;
+    const style = {
+        ...value,
+        ["position"]: "relative",
+        ["left"]: "1px",
+        ["top"]: "1px",
+        ["width"]: bounds["width"],
+        ["height"]: bounds["height"],
+        ["cursor"]: "inherit"
+    };
+    return (
+        <Base id_in={id} bounds_in={bounds}>
+            <button {...rect} style={style}>{text}</button>
+        </Base>
+    )
 }
 
 function ButtonItem(props) {
