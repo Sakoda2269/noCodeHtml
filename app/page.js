@@ -13,6 +13,16 @@ import UndoContext from "../contexts/undoContext";
 
 export default function Home() {
 
+
+	return (
+		<div>
+			<PlaceArea />
+		</div>
+	);
+}
+
+function PlaceArea() {
+
 	const [dragging, setDragging] = useState({});
 	const [elements, setElements] = useState({});
 	const [selecting, setSelecting] = useState("");
@@ -21,6 +31,24 @@ export default function Home() {
 	const [redoData, setRedoData] = useState({});
 
 	const [canRedo, setCanRedo] = useState(-1);
+
+	useEffect(() => {
+		const shortcut = (event) => {
+			event.preventDefault();
+			if (event.ctrlKey && event.key == "z") {
+				document.getElementById("undo").click();
+			}
+			if (event.ctrlKey && event.key == "y") {
+				document.getElementById("redo").click();
+			}
+		}
+		window.addEventListener("keydown", shortcut);
+
+		return () => {
+			window.removeEventListener("keydown", shortcut);
+		}
+
+	}, [])
 
 
 	const undo = (event) => {
@@ -163,11 +191,11 @@ export default function Home() {
 								{undoStack.length == 0 ? (
 									<button onClick={undo} disabled>undo</button>
 								) : (
-									<button onClick={undo}>undo</button>
+									<button onClick={undo} id="undo">undo</button>
 								)}
 								
 								{canRedo == undoStack.length ? (
-									<button onClick={redo}>redo</button>
+									<button onClick={redo} id="redo">redo</button>
 								) : (
 									<button onClick={redo} disabled>redo</button>
 								)}
