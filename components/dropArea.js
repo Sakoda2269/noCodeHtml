@@ -10,7 +10,7 @@ function DropArea(props) {
     const {dragging, setDragging} = useContext(DraggingElementContext);
     const {selecting, setSelecting} = useContext(SelectingElementContext)
     const {elements, setElements} = useContext(ElementsContext);
-    const {undoStack, setUndoStack} = useContext(UndoContext);
+    const {undoStack, appendToStack} = useContext(UndoContext);
 
     const ref = useRef(null);
     const [pos, setPos] = useState({top: 0, left: 0});
@@ -51,8 +51,7 @@ function DropArea(props) {
                     }
                 }
             ));
-            setUndoStack([
-                ...undoStack,
+            appendToStack(
                 {
                     action: "addElement",
                     id: id,
@@ -63,7 +62,7 @@ function DropArea(props) {
                         bounds: bounds
                     }
                 }
-            ])
+            )
             setDragging({});
         }
         

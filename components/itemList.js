@@ -25,7 +25,7 @@ function Base({id_in, bounds_in, children}) {
 
     const {selecting, setSelecting} = useContext(SelectingElementContext);
     const {elements, setElements} = useContext(ElementsContext);
-    const {undoStack, setUndoStack} = useContext(UndoContext);
+    const {undoStack, appendToStack} = useContext(UndoContext);
     const [btnId, setBtnId] = useState(id_in);
     const [mousePos, setMousePos] = useState({x: 0, y: 0})
     
@@ -95,12 +95,12 @@ function Base({id_in, bounds_in, children}) {
             }
         })
         console.log(undoStack);
-        setUndoStack([...undoStack, {
+        appendToStack({
             action: "posChange",
             id: btnId,
             prevPos: {x: nowx, y: nowy},
             nowPos: {x: nowx + dx, y: nowy + dy}
-        }]);
+        });
     }
 
     const onSizeChangeStart = (event) => {
@@ -149,12 +149,12 @@ function Base({id_in, bounds_in, children}) {
         let prevy = Number(bounds.top.slice(0, -2));
         let prevw = Number(bounds.width.slice(0, -2));
         let prevh = Number(bounds.height.slice(0, -2));
-        setUndoStack([...undoStack, {
+        appendToStack({
             action:"sizeChange",
             id: btnId,
             prevBounds: {x: prevx, y: prevy, w: prevw, h: prevh},
             nowBounds: {x: x, y: y, w: w, h: h}
-        }])
+        })
     }
 
     const onSizeChangeDragging2 = (event) => {
@@ -200,12 +200,12 @@ function Base({id_in, bounds_in, children}) {
         let prevy = Number(bounds.top.slice(0, -2));
         let prevw = Number(bounds.width.slice(0, -2));
         let prevh = Number(bounds.height.slice(0, -2));
-        setUndoStack([...undoStack, {
+        appendToStack({
             action:"sizeChange",
             id: btnId,
             prevBounds: {x: prevx, y: prevy, w: prevw, h: prevh},
             nowBounds: {x: x, y: y, w: w, h: h}
-        }])
+        })
     }
 
     const onSizeChangeDragging3 = (event) => {
@@ -250,12 +250,12 @@ function Base({id_in, bounds_in, children}) {
         let prevy = Number(bounds.top.slice(0, -2));
         let prevw = Number(bounds.width.slice(0, -2));
         let prevh = Number(bounds.height.slice(0, -2));
-        setUndoStack([...undoStack, {
+        appendToStack({
             action:"sizeChange",
             id: btnId,
             prevBounds: {x: prevx, y: prevy, w: prevw, h: prevh},
             nowBounds: {x: x, y: y, w: w, h: h}
-        }])
+        })
     }
 
     const onSizeChangeDragging4 = (event) => {
@@ -299,12 +299,12 @@ function Base({id_in, bounds_in, children}) {
         let prevy = Number(bounds.top.slice(0, -2));
         let prevw = Number(bounds.width.slice(0, -2));
         let prevh = Number(bounds.height.slice(0, -2));
-        setUndoStack([...undoStack, {
+        appendToStack({
             action:"sizeChange",
             id: btnId,
             prevBounds: {x: prevx, y: prevy, w: prevw, h: prevh},
             nowBounds: {x: x, y: y, w: w, h: h}
-        }])
+        })
     }
 
     return (

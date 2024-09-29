@@ -181,12 +181,26 @@ function PlaceArea() {
 		}
 	}
 
+	const appendToStack = (item) => {
+		let tmp;
+		if(undoStack.length > 100) {
+			tmp = undoStack.slice(1, -1);
+		} else {
+			tmp = undoStack;
+		}
+		setUndoStack([
+			...tmp,
+			item
+		])
+		
+	}
+
 	return (
 		<div>
 			<DraggingElementContext.Provider value={{ dragging, setDragging }}>
 				<ElementsContext.Provider value={{ elements, setElements }}>
 					<SelectingElementContext.Provider value={{ selecting, setSelecting }}>
-						<UndoContext.Provider value={{ undoStack, setUndoStack }}>
+						<UndoContext.Provider value={{ undoStack, appendToStack }}>
 							<div className={styles.menuBar}>
 								{undoStack.length == 0 ? (
 									<button onClick={undo} disabled>undo</button>

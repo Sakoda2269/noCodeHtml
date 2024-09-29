@@ -9,7 +9,7 @@ import UndoContext from "../contexts/undoContext";
 function PropertyArea() {
     const {selecting, setSelecting} = useContext(SelectingElementContext);
     const {elements, setElements} = useContext(ElementsContext);
-    const {undoStack, setUndoStack} = useContext(UndoContext);
+    const {undoStack, appendToStack} = useContext(UndoContext);
     const [tabKey, setTabKey] = useState("general");
     const [general, setGeneral] = useState({});
     const [styles, setStyles] = useState({});
@@ -71,15 +71,14 @@ function PropertyArea() {
         });
         elements[selecting]["changeId"](event.target.value);
         setSelecting(event.target.value);
-        setUndoStack([
-            ...undoStack,
+        appendToStack(
             {
                 action: "idChange",
                 id: event.target.value,
                 prevId: selecting,
                 nowId: event.target.value
             }
-        ]);
+        );
 
     }
 
@@ -124,14 +123,13 @@ function PropertyArea() {
         const {[selecting]: value, ...rect} = elements;
         setElements(rect);
         setSelecting("");
-        setUndoStack([
-            ...undoStack, 
+        appendToStack( 
             {
                 action: "deleteElement",
                 id: selecting,
                 data: value
             }
-        ])
+        )
     }
 
     const addStyle = (event) => {
