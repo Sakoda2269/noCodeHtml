@@ -3,12 +3,14 @@ import {useContext, useState, useRef, useEffect} from "react";
 import DraggingElementContext from "./contexts/draggingElementContext";
 import ElementsContext from "./contexts/elementsContext";
 import SelectingElementContext from "./contexts/selectingElementContext";
+import UndoContext from "./contexts/undoContext";
 
 function DropArea(props) {
 
     const {dragging, setDragging} = useContext(DraggingElementContext);
     const {selecting, setSelecting} = useContext(SelectingElementContext)
     const {elements, setElements} = useContext(ElementsContext);
+    const {undoStack, setUndoStack} = useContext(UndoContext);
 
     const ref = useRef(null);
     const [pos, setPos] = useState({top: 0, left: 0});
@@ -49,6 +51,19 @@ function DropArea(props) {
                     }
                 }
             ));
+            setUndoStack([
+                ...undoStack,
+                {
+                    action: "addElement",
+                    id: id,
+                    data: {
+                        element: element,
+                        props: props,
+                        text: text,
+                        bounds: bounds
+                    }
+                }
+            ])
             setDragging({});
         }
         

@@ -4,10 +4,12 @@ import {useState, useRef, useEffect, useContext} from "react";
 import {Tab, Tabs} from "react-bootstrap";
 import SelectingElementContext from "./contexts/selectingElementContext";
 import ElementsContext from "./contexts/elementsContext";
+import UndoContext from "./contexts/undoContext";
 
 function PropertyArea() {
     const {selecting, setSelecting} = useContext(SelectingElementContext);
     const {elements, setElements} = useContext(ElementsContext);
+    const {undoStack, setUndoStack} = useContext(UndoContext);
     const [tabKey, setTabKey] = useState("general");
     const [general, setGeneral] = useState({});
     const [styles, setStyles] = useState({});
@@ -63,16 +65,22 @@ function PropertyArea() {
 
     const onIdChange = (event) => {
         const {[selecting]: value, ...rest} = elements;
-            setElements({
-                ...rest,
-                [event.target.value]: value
-            });
-            console.log({
-                ...rest,
-                [event.target.value]: value
-            });
-            elements[selecting]["changeId"](event.target.value);
-            setSelecting(event.target.value);
+        setElements({
+            ...rest,
+            [event.target.value]: value
+        });
+        elements[selecting]["changeId"](event.target.value);
+        setSelecting(event.target.value);
+        setUndoStack([
+            ...undoStack,
+            {
+                action: "idChange",
+                id: event.target.value,
+                prevId: selecting,
+                nowId: event.target.value
+            }
+        ]);
+
     }
 
     const onStyleChange = (event) => {
