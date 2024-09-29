@@ -15,7 +15,7 @@ export default function Home() {
 
 	const [dragging, setDragging] = useState({});
 	const [elements, setElements] = useState({});
-	const [selecting, setSelecting] = useState({});
+	const [selecting, setSelecting] = useState("");
 	const [undoStack, setUndoStack] = useState([]);
 
 	const [redoData, setRedoData] = useState({});
@@ -65,6 +65,7 @@ export default function Home() {
 				let id = actionData.id;
 				let {[id]: value, ...rect} = elements;
 				setElements(rect);
+				setSelecting("");
 			}
 			else if(action == "idChange") {
 				let prevId = actionData.prevId;
@@ -76,6 +77,14 @@ export default function Home() {
 				});
 				elements[nowId]["changeId"](prevId);
         		setSelecting(prevId);
+			}
+			else if(action == "deleteElement") {
+				let id = actionData.id;
+				setSelecting(id);
+				setElements({
+					...elements, 
+					[id]: actionData.data
+				});
 			}
 		}
 	}
@@ -123,6 +132,7 @@ export default function Home() {
 					[id]:actionData.data
 				}
 			)
+			setSelecting(id);
 		}
 		else if(action == "idChange") {
 			let prevId = actionData.prevId;
@@ -134,6 +144,12 @@ export default function Home() {
 			});
 			elements[prevId]["changeId"](nowId);
 			setSelecting(nowId);
+		}
+		else if(action == "deleteElement") {
+			let id = actionData.id;
+			const {[id]: value, ...rect} = elements;
+			setElements(rect);
+			setSelecting("");
 		}
 	}
 

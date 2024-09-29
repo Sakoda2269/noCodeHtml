@@ -120,6 +120,20 @@ function PropertyArea() {
         })
     }
 
+    const deleteElem = (event) => {
+        const {[selecting]: value, ...rect} = elements;
+        setElements(rect);
+        setSelecting("");
+        setUndoStack([
+            ...undoStack, 
+            {
+                action: "deleteElement",
+                id: selecting,
+                data: value
+            }
+        ])
+    }
+
     const addStyle = (event) => {
         
     }
@@ -142,6 +156,11 @@ function PropertyArea() {
                                     <p></p>
                                 </span>
                             ))}
+                            {selecting != "" ? (
+                                <button className="btn btn-danger" onClick={deleteElem} style={{width: "100%"}}>削除</button>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                         ) : (<></>)}
                 </Tab>
