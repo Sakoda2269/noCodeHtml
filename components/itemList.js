@@ -1,10 +1,10 @@
 "use client"
 import React, {useState, useEffect, uesContext, useContext, useRef} from "react";
-import styles from "./page.module.css";
-import DraggingElementContext from "./contexts/draggingElementContext";
-import SelectingElementContext from "./contexts/selectingElementContext";
-import ElementsContext from "./contexts/elementsContext";
-import UndoContext from "./contexts/undoContext";
+import styles from "../app/page.module.css";
+import DraggingElementContext from "../contexts/draggingElementContext";
+import SelectingElementContext from "../contexts/selectingElementContext";
+import ElementsContext from "../contexts/elementsContext";
+import UndoContext from "../contexts/undoContext";
 
 
 function ItemList(props) {

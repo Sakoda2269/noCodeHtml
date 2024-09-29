@@ -1,9 +1,9 @@
 "use client"
 import {useContext, useState, useRef, useEffect} from "react";
-import DraggingElementContext from "./contexts/draggingElementContext";
-import ElementsContext from "./contexts/elementsContext";
-import SelectingElementContext from "./contexts/selectingElementContext";
-import UndoContext from "./contexts/undoContext";
+import DraggingElementContext from "../contexts/draggingElementContext";
+import ElementsContext from "../contexts/elementsContext";
+import SelectingElementContext from "../contexts/selectingElementContext";
+import UndoContext from "../contexts/undoContext";
 
 function DropArea(props) {
 

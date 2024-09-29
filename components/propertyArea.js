@@ -2,9 +2,9 @@
 
 import {useState, useRef, useEffect, useContext} from "react";
 import {Tab, Tabs} from "react-bootstrap";
-import SelectingElementContext from "./contexts/selectingElementContext";
-import ElementsContext from "./contexts/elementsContext";
-import UndoContext from "./contexts/undoContext";
+import SelectingElementContext from "../contexts/selectingElementContext";
+import ElementsContext from "../contexts/elementsContext";
+import UndoContext from "../contexts/undoContext";
 
 function PropertyArea() {
     const {selecting, setSelecting} = useContext(SelectingElementContext);

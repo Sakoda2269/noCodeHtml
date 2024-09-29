@@ -3,13 +3,13 @@ import styles from "./page.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useEffect, useState } from "react";
 
-import ItemList from "./itemList";
-import DraggingElementContext from "./contexts/draggingElementContext";
-import ElementsContext from "./contexts/elementsContext";
-import SelectingElementContext from "./contexts/selectingElementContext";
-import DropArea from "./dropArea";
-import PropertyArea from "./propertyArea";
-import UndoContext from "./contexts/undoContext";
+import ItemList from "../components/itemList";
+import DraggingElementContext from "../contexts/draggingElementContext";
+import ElementsContext from "../contexts/elementsContext";
+import SelectingElementContext from "../contexts/selectingElementContext";
+import DropArea from "../components/dropArea";
+import PropertyArea from "../components/propertyArea";
+import UndoContext from "../contexts/undoContext";
 
 export default function Home() {
 
