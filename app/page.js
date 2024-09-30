@@ -34,11 +34,12 @@ function PlaceArea() {
 
 	useEffect(() => {
 		const shortcut = (event) => {
-			event.preventDefault();
 			if (event.ctrlKey && event.key == "z") {
+				event.preventDefault();
 				document.getElementById("undo").click();
 			}
 			if (event.ctrlKey && event.key == "y") {
+				event.preventDefault();
 				document.getElementById("redo").click();
 			}
 		}
