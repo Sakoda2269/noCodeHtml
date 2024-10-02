@@ -1,11 +1,10 @@
 "use client"
 import styles from "./page.module.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import Link from "next/link";
 
-import ItemList, {itemType} from "../components/itemList";
+import ItemList from "../components/itemList";
 import DraggingElementContext from "../contexts/draggingElementContext";
-import ElementsContext from "../contexts/elementsContext";
 import SelectingElementContext from "../contexts/selectingElementContext";
 import DropArea from "../components/dropArea";
 import PropertyArea from "../components/propertyArea";
@@ -15,7 +14,6 @@ import UndoContext from "../contexts/undoContext";
 const BASE_URL = "http://localhost:8080/api"
 
 export default function Home() {
-
 
 	return (
 		<div>
@@ -27,12 +25,9 @@ export default function Home() {
 function PlaceArea() {
 
 	const [dragging, setDragging] = useState({});
-	const [elements, setElements] = useState({});
 	const [selecting, setSelecting] = useState("");
 	const [undoStack, setUndoStack] = useState([]);
-
 	const [redoData, setRedoData] = useState({});
-
 	const [canRedo, setCanRedo] = useState(-1);
 
 	useEffect(() => {
@@ -53,7 +48,6 @@ function PlaceArea() {
 		}
 
 	}, [])
-
 
 	const undo = (event) => {
 		if (undoStack.length > 0) {
@@ -203,7 +197,7 @@ function PlaceArea() {
 		let elems = [];
 		for(const [key, value] of Object.entries(elements)) {
 			let elem = {
-				type: itemType.get(value.element),
+				type: value.type,
 				id: key,
 				className: value.props.className,
 				text: value.text,
@@ -273,38 +267,39 @@ function PlaceArea() {
 	return (
 		<div>
 			<DraggingElementContext.Provider value={{ dragging, setDragging }}>
-				<ElementsContext.Provider value={{ elements, setElements }}>
+				<UndoContext.Provider value={{ undoStack, appendToStack }}>
 					<SelectingElementContext.Provider value={{ selecting, setSelecting }}>
-						<UndoContext.Provider value={{ undoStack, appendToStack }}>
-							<div className={styles.menuBar}>
-								{undoStack.length == 0 ? (
-									<button onClick={undo} disabled>undo</button>
-								) : (
-									<button onClick={undo} id="undo">undo</button>
-								)}
-								
-								{canRedo == undoStack.length ? (
-									<button onClick={redo} id="redo">redo</button>
-								) : (
-									<button onClick={redo} disabled>redo</button>
-								)}
-								<button onClick={exportLayout} id="export">export</button>
-								<button onClick={preview} id="preview">preview</button>
+						<div className={styles.menuBar}>
+							{undoStack.length == 0 ? (
+								<button onClick={undo} disabled>undo</button>
+							) : (
+								<button onClick={undo} id="undo">undo</button>
+							)}
+							
+							{canRedo == undoStack.length ? (
+								<button onClick={redo} id="redo">redo</button>
+							) : (
+								<button onClick={redo} disabled>redo</button>
+							)}
+							<button onClick={exportLayout} id="export">export</button>
+							<button onClick={preview} id="preview">preview</button>
+							<Link href="/event-hub">
+								<button id="event_page">event</button>
+							</Link>
+						</div>
+						<div className={"row"} style={{ height: "100vh" }}>
+							<div className={`${styles.border} col-2`}>
+								<ItemList />
 							</div>
-							<div className={"row"} style={{ height: "100vh" }}>
-								<div className={`${styles.border} col-2`}>
-									<ItemList />
-								</div>
-								<div className={`${styles.border} col-7`}>
-									<DropArea />
-								</div>
-								<div className={`${styles.border} col-3`}>
-									<PropertyArea />
-								</div>
+							<div className={`${styles.border} col-7`}>
+								<DropArea />
 							</div>
-						</UndoContext.Provider>
+							<div className={`${styles.border} col-3`}>
+								<PropertyArea />
+							</div>
+						</div>
 					</SelectingElementContext.Provider>
-				</ElementsContext.Provider>
+				</UndoContext.Provider>
 			</DraggingElementContext.Provider>
 		</div>
 	);

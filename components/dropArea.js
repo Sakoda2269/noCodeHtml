@@ -4,6 +4,7 @@ import DraggingElementContext from "../contexts/draggingElementContext";
 import ElementsContext from "../contexts/elementsContext";
 import SelectingElementContext from "../contexts/selectingElementContext";
 import UndoContext from "../contexts/undoContext";
+import { itemType } from "./itemList";
 
 function DropArea(props) {
 
@@ -21,6 +22,8 @@ function DropArea(props) {
             setPos({top: rect.top, left: rect.left});
         }
     }, []);
+
+
 
     const onDrop = (event) => {
         event.preventDefault();
@@ -47,7 +50,8 @@ function DropArea(props) {
                         element: element,
                         props: props,
                         text: text,
-                        bounds: bounds
+                        bounds: bounds,
+                        type: itemType.get(element)
                     }
                 }
             ));
@@ -59,7 +63,8 @@ function DropArea(props) {
                         element: element,
                         props: props,
                         text: text,
-                        bounds: bounds
+                        bounds: bounds,
+                        type: itemType.get(element)
                     }
                 }
             )
