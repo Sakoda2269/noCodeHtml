@@ -3,13 +3,16 @@ import styles from "./page.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useEffect, useState } from "react";
 
-import ItemList from "../components/itemList";
+import ItemList, {itemType} from "../components/itemList";
 import DraggingElementContext from "../contexts/draggingElementContext";
 import ElementsContext from "../contexts/elementsContext";
 import SelectingElementContext from "../contexts/selectingElementContext";
 import DropArea from "../components/dropArea";
 import PropertyArea from "../components/propertyArea";
 import UndoContext from "../contexts/undoContext";
+
+
+const BASE_URL = "http://localhost:8080/api"
 
 export default function Home() {
 
@@ -195,6 +198,77 @@ function PlaceArea() {
 		])
 		
 	}
+	
+	const exportLayout =  async (event) => {
+		let elems = [];
+		for(const [key, value] of Object.entries(elements)) {
+			let elem = {
+				type: itemType.get(value.element),
+				id: key,
+				className: value.props.className,
+				text: value.text,
+				style: value.props.style,
+				bounds: value.bounds
+			};
+			elems.push(elem);
+		}
+		let json = {elements: elems};
+		const response = await fetch(`${BASE_URL}/layout_json`,{
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(json)
+		}).then(response => {
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return response.blob(); // レスポンスをテキストとして取得
+		})
+		.then(data => {
+			const url = URL.createObjectURL(data);
+        
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = 'output.model';
+			document.body.appendChild(a);
+			a.click();
+			
+			// クリーンアップ
+			URL.revokeObjectURL(url);
+			document.body.removeChild(a); // 取得した文字列を表示
+		})
+		
+	}
+	
+	const preview = (event) => {
+		let elems = [];
+		for(const [key, value] of Object.entries(elements)) {
+			let elem = {
+				type: itemType.get(value.element),
+				id: key,
+				className: value.props.className,
+				text: value.text,
+				style: value.props.style,
+				bounds: value.bounds
+			};
+			elems.push(elem);
+		}
+		let json = {elements: elems};
+		fetch(`${BASE_URL}/preview`, {
+			method:"POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(json)
+		})
+		.then(response => response.text())
+		.then(redirectUrl => {
+			console.log(redirectUrl);
+			window.open(redirectUrl, '_blank');
+		})
+		.catch(error => console.error('エラー:', error));
+	}
 
 	return (
 		<div>
@@ -214,6 +288,8 @@ function PlaceArea() {
 								) : (
 									<button onClick={redo} disabled>redo</button>
 								)}
+								<button onClick={exportLayout} id="export">export</button>
+								<button onClick={preview} id="preview">preview</button>
 							</div>
 							<div className={"row"} style={{ height: "100vh" }}>
 								<div className={`${styles.border} col-2`}>
