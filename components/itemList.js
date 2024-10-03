@@ -5,6 +5,7 @@ import DraggingElementContext from "../contexts/draggingElementContext";
 import SelectingElementContext from "../contexts/selectingElementContext";
 import ElementsContext from "../contexts/elementsContext";
 import UndoContext from "../contexts/undoContext";
+import EventsContext from "@/contexts/eventsContext";
 
 
 
@@ -367,9 +368,10 @@ function Button({props, bounds, text, id}){
         ["height"]: bounds["height"],
         ["cursor"]: "inherit"
     };
+
     return (
         <Base id_in={id} bounds_in={bounds}>
-            <button {...rect} style={style}>{text}</button>
+            <button {...rect} style={style} >{text}</button>
         </Base>
     )
 }
@@ -385,6 +387,7 @@ function TextInput({props, bounds, text, id}) {
         ["height"]: bounds["height"],
         ["cursor"]: "inherit"
     };
+
     return (
         <Base id_in={id} bounds_in={bounds}>
             <input type="text" {...rect} style={style} readOnly="readonly" value={text}/>
@@ -405,7 +408,7 @@ function TextLabel({props, bounds, text, id}) {
     };
     return (
         <Base id_in={id} bounds_in={bounds}>
-            <label {...rect} style={style}>{text}</label>
+            <label {...rect} style={style} >{text}</label>
         </Base>
     )
 }
@@ -448,7 +451,10 @@ function ButtonItem() {
             id: uuid,
             bounds: bounds,
             x: mouseX,
-            y: mouseY
+            y: mouseY,
+            events: {
+                onClick: ""
+            }
         })
     }
 
@@ -498,7 +504,10 @@ function TextInputItem() {
             id: uuid,
             bounds: bounds,
             x: mouseX,
-            y: mouseY
+            y: mouseY,
+            events: {
+                onChange: ""
+            }
         })
     }
 
@@ -547,7 +556,9 @@ function TextLabelItem() {
             id: uuid,
             bounds: bounds,
             x: mouseX,
-            y: mouseY
+            y: mouseY,
+            events: {
+            }
         })
     }
 

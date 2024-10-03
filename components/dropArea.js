@@ -51,7 +51,8 @@ function DropArea(props) {
                         props: props,
                         text: text,
                         bounds: bounds,
-                        type: itemType.get(element)
+                        type: itemType.get(element),
+                        events: dragging.events
                     }
                 }
             ));

@@ -5,15 +5,18 @@ import {Tab, Tabs} from "react-bootstrap";
 import SelectingElementContext from "../contexts/selectingElementContext";
 import ElementsContext from "../contexts/elementsContext";
 import UndoContext from "../contexts/undoContext";
+import EventsContext from "@/contexts/eventsContext";
 
 function PropertyArea() {
     const {selecting, setSelecting} = useContext(SelectingElementContext);
     const {elements, setElements} = useContext(ElementsContext);
     const {undoStack, appendToStack} = useContext(UndoContext);
+    const {events, setEvents} = useContext(EventsContext);
     const [tabKey, setTabKey] = useState("general");
     const [general, setGeneral] = useState({});
     const [styles, setStyles] = useState({});
     const [bounds, setBounds] = useState({});
+    const [eventSelects, setEventSelects] = useState({});
 
     useEffect(() => {
         if (elements[selecting]) {
@@ -24,6 +27,7 @@ function PropertyArea() {
             });
             setStyles(elements[selecting]["props"]["style"]);
             setBounds(elements[selecting]["bounds"]);
+            setEventSelects(elements[selecting].events);
         } else {
             setGeneral({});
             setStyles({});
@@ -182,6 +186,23 @@ function PropertyArea() {
                                     <label className="form-label">{key}</label>
                                     <input type="text" id={key} className="form-control" value={value} onChange={onStyleChange}/>
                                 </span>
+                            ))}
+                        </div>
+                    ) : (<></>)}
+                </Tab>
+                <Tab eventKey="event" title="イベント">
+                    {elements[selecting] ? (
+                        <div>
+                            {Object.keys(elements[selecting].events).map((key) => (
+                                <div key={key}>
+                                    <label className="form-label">{key}</label>
+                                    <select>
+                                        <option value="">Select...</option>
+                                        {Object.keys(events).map((ekey) => (
+                                            <option value={ekey} key={ekey}>{events[ekey].title}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             ))}
                         </div>
                     ) : (<></>)}
