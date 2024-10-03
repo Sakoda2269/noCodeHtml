@@ -17,14 +17,16 @@ function EventPage({params}) {
 
     const [selecting, setSelecting] = useState("");
     const [dragging, setDragging] = useState({});
-    const [event, setEvent] = useState({
-        id: params.id,
-        variables: [],
-        event: {
-        },
-    });
+    const [event, setEvent] = useState(events[params.id]);
     const [mouseOver, setMouseOver] = useState("");
     const [arrowDragging, setArrowDragging] = useState("");
+    
+    const saveEvent = () => {
+        setEvents({
+            ...events,
+            [params.id]:event
+        })
+    }
  
     return(
         <div>
@@ -37,7 +39,7 @@ function EventPage({params}) {
                                 <Link href="/event-hub">
                                     <button id="event_page">event hub</button>
                                 </Link>
-                                    <button id="save">save</button>
+                                    <button id="save" onClick={saveEvent}>save</button>
                             </div>
                                 <div className="row" style={{ height: "100vh" }}>
                                     <div className={`col-2 ${styles.border}`}>

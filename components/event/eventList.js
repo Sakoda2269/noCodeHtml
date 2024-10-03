@@ -198,7 +198,7 @@ function Base({children, id_in, selector_in, confirm}) {
                 onClick={onClick} onDragStart={dragStart} onDragEnd={dragEnd} onMouseEnter={onMouseEnter}
                 draggable="true" onDrop={onDropArrow} ref={ref2} onMouseLeave={onMouseExit} onDragOver={onMouseEnter}
                 onDragLeave={onMouseExit}
-            >
+            >   
                 <h3 style={{paddingLeft: "10px", paddingRight: "10px"}}>{children}</h3>
                 {selecting == id && (
                 <div>
@@ -207,7 +207,7 @@ function Base({children, id_in, selector_in, confirm}) {
                 )}
             </div>
             <div style={circle} onDragStart={arrowDragStart} onDrag={arrowDraggingF} onDragEnd={arrowDragEnd} draggable="true" ref={ref}>
-                {isArrowDragStarted && <Arrow start={{x: 0, y: 0}} end={{x: 8 + arrowEndPos.x, y: 8 + arrowEndPos.y}} />}
+                {<Arrow start={{x: 0, y: 0}} end={{x: 8 + arrowEndPos.x, y: 8 + arrowEndPos.y}} />}
             </div>
         </div>
     )
@@ -231,13 +231,12 @@ const valueMap = {
 function Get({id}) {
 
     const {elements, setElements} = useContext(ElementsContext);
-    const {variables, setVariables} = useContext(VariableContext);
     const {selecting, setSelecting} = useContext(EventSelectingContext);
     const {event, setEvent} = useContext(EventContext);
 
-    const [selectId, setSelectId] = useState("");
-    const [variable, setVariable] = useState("");
-    const [selectType, setSelectType] = useState("");
+    const [selectId, setSelectId] = useState(event.event[id].selector ? event.event[id].selector [0]: "");;
+    const [selectType, setSelectType] = useState(event.event[id].selector ? event.event[id].selector [1]: "");
+    const [variable, setVariable] = useState(event.event[id].selector ? event.event[id].selector [2]: "");
 
     const idChange = (e) => {
         e.stopPropagation();
@@ -339,10 +338,14 @@ function Set({id}) {
     const {elements, setElements} = useContext(ElementsContext);
     const {selecting, setSelecting} = useContext(EventSelectingContext);
 
-    const [variable, setVariable] = useState("");
-    const [selectId, setSelectId] = useState("");
-    const [selectType, setSelectType] = useState("");
+    const [variable, setVariable] = useState(event.event[id].selector ? event.event[id].selector[0] : "");
+    const [selectId, setSelectId] = useState(event.event[id].selector ? event.event[id].selector[1] : "");
+    const [selectType, setSelectType] = useState(event.event[id].selector ? event.event[id].selector[2] : "");
 
+    useEffect(() => {
+        console.log(event.event[id].selector)
+    }, [])
+    
     const idChange = (e) => {
         e.stopPropagation();
         setSelectId(e.target.value);
@@ -370,7 +373,7 @@ function Set({id}) {
             e.stopPropagation();
         }
         if(validCheck()) {
-            let selector = [selectId, selectType, variable];
+            let selector = [variable, selectId, selectType];
             setEvent({
                 ...event,
                 ["event"]:{

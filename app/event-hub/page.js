@@ -31,6 +31,9 @@ function EventPage() {
             ...events,
             [uuid]: {
                 title: eventName,
+                variables: [],
+                event: {
+                },
             }
         });
         setIsOpen(false);
