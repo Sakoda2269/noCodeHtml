@@ -40,3 +40,29 @@ a {
     color-scheme: dark;
   }
 }
+
+
+.menuBar {
+  background-color: #333;
+  overflow: hidden;
+  display: flex;
+}
+.menuBar button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  display: inline-block;
+}
+
+.menuBar :disabled {
+  background-color: #333;
+  color: rgb(151, 151, 151);
+  border: none;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 16px;
+  display: inline-block;
+}

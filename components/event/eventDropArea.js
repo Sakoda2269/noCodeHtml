@@ -44,6 +44,7 @@ function EventDropArea({eventsId}){
                         action: eventItem,
                         bounds: bounds,
                         parent: "",
+                        childe: "",
                         selector: []
                     }
                 }

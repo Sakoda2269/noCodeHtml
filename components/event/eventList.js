@@ -7,6 +7,7 @@ import EventsContext from "@/contexts/eventsContext";
 import { useContext, useEffect, useRef, useState } from "react";
 import Arrow from "../arrow";
 import EventMouseOverContext from "@/contexts/event/EventMouseOverContext";
+import EventArrowDraggingContext from "@/contexts/event/eventArrowDraggingContext";
 
 
 function EventList({eventsId}) {
@@ -28,11 +29,14 @@ function Base({children, id_in, selector_in, confirm}) {
     const {selecting, setSelecting} = useContext(EventSelectingContext);
     const {event, setEvent} = useContext(EventContext);
     const {mouseOver, setMouseOver} = useContext(EventMouseOverContext);
+    const {arrowDragging, setArrowDragging} = useContext(EventArrowDraggingContext);
     const [id, setId] = useState(id_in);
     const [mousePos, setMousePos] = useState({x: 0, y: 0});
     const [selectNum, setSelectNum] = useState(0);
     const [isArrowDragStarted, setIsArrowDragStarted] = useState(false);
     const [arrowEndPos, setArrowEndPos] = useState({x: 0, y: 0});
+    const [onMouse, setOnMouse] = useState(false);
+    const [borderStyle, setBorderStyle] = useState("1px solid black");
 
     const ref = useRef(null)
     const ref2 = useRef(null);
@@ -41,18 +45,22 @@ function Base({children, id_in, selector_in, confirm}) {
         if(ref.current && ref2.current) {
             let rect = ref.current.getBoundingClientRect();
             let rect2 = ref2.current.getBoundingClientRect();
-            if(event.event[id].parent != "") {
-                let parent = event.event[id].parent;
+            if(event.event[id].childe != "") {
+                let parent = event.event[id].childe;
                 let parentx = (event.event[parent].bounds.left - (event.event[id].bounds.left + (rect.left - rect2.left)));
                 let parenty = event.event[parent].bounds.top - (event.event[id].bounds.top + (rect.top - rect2.top));
                 setArrowEndPos({x: parentx, y: parenty})
+            }else{
+                setArrowEndPos({x: 0, y: 0})
             }
         }
         if(id == selecting){
             setSelectNum(1);
+            setBorderStyle("3px solid black");
         }else{
             if(selectNum == 1){
                 setSelectNum(0);
+                setBorderStyle("1px solid black");
                 if(confirm){
                     confirm();
                 }
@@ -103,7 +111,24 @@ function Base({children, id_in, selector_in, confirm}) {
         position: "relative",
     }
 
-    const onMouseOver = (e) => {
+    const onMouseEnter = (e) => {
+        if(id != selecting){
+            setBorderStyle("3px inset lightGreen")
+        }
+        setOnMouse(true);
+    }
+    
+    const onMouseExit = (e) => {
+        if(id != selecting) {
+            setBorderStyle("1px solid black")
+        }
+        setOnMouse(false);
+    }
+    
+    const onDropArrow = (e) => {
+        if(event.event[id].childe != ""){
+            event.event[event.event[id].childe].parent = "";
+        }
         setMouseOver(id);
     }
 
@@ -116,36 +141,63 @@ function Base({children, id_in, selector_in, confirm}) {
         })
     }
 
-    const arrowDragging = (e) => {
+    const arrowDraggingF = (e) => {
         let dx = e.pageX - mousePos.x;
         let dy = e.pageY - mousePos.y;
+        setArrowDragging(id);
         setArrowEndPos({x: dx, y: dy});
     }
     
     const arrowDragEnd = (e) => {
-        if(mouseOver != id) {
-            if(event.event[mouseOver]) {
+        if(mouseOver == "" || mouseOver == id) {
+            setArrowEndPos({x: 0, y: 0})
+            let childe = event.event[id].childe;
+            if(event.event[id].childe != "") {
                 setEvent({
                     ...event,
                     ["event"]:{
                         ...event.event,
                         [id]: {
                             ...event.event[id],
-                            ["parent"]: mouseOver
+                            ["childe"]: ""
+                        },
+                        [childe]: {
+                            ...event.event[childe],
+                            ["parent"]: ""
                         }
                     }
                 })
             }
-        } else {
+        }
+        else if(mouseOver != id) {
+            let eventdata = event.event
+            if(event.event[mouseOver].parent != ""){
+                let parent = event.event[mouseOver].parent;
+                console.log(event.event[parent].childe, parent)
+                eventdata[parent] = {...eventdata[parent], ["childe"]: ""};
+            }
+            if(event.event[mouseOver]) {
+                eventdata[mouseOver] = {...eventdata[mouseOver], ["parent"]: id};
+                eventdata[id] = {...eventdata[id], ["childe"]: mouseOver};
+            }
+            setEvent({
+                ...event,
+                ["event"]: eventdata
+            });
+            setMouseOver("");
+        } else{
             setArrowEndPos({x: 0, y: 0})
         }
+        setArrowDragging("");
     }
-
+    
 
     return(
         <div>
-            <div style={{border: `${{true: 3, false: 1}[selecting == id]}px solid black`, textAlign: "center", backgroundColor: "yellow"}}
-                onClick={onClick} onDragStart={dragStart} onDragEnd={dragEnd} draggable="true" onMouseOver={onMouseOver} ref={ref2}
+            <div style={{border: `${borderStyle}`, textAlign: "center", backgroundColor: "yellow"}}
+                onClick={onClick} onDragStart={dragStart} onDragEnd={dragEnd} onMouseEnter={onMouseEnter}
+                draggable="true" onDrop={onDropArrow} ref={ref2} onMouseLeave={onMouseExit} onDragOver={onMouseEnter}
+                onDragLeave={onMouseExit}
             >
                 <h3 style={{paddingLeft: "10px", paddingRight: "10px"}}>{children}</h3>
                 {selecting == id && (
@@ -154,7 +206,7 @@ function Base({children, id_in, selector_in, confirm}) {
                 </div>
                 )}
             </div>
-            <div style={circle} onDragStart={arrowDragStart} onDrag={arrowDragging} onDragEnd={arrowDragEnd} draggable="true" ref={ref}>
+            <div style={circle} onDragStart={arrowDragStart} onDrag={arrowDraggingF} onDragEnd={arrowDragEnd} draggable="true" ref={ref}>
                 {isArrowDragStarted && <Arrow start={{x: 0, y: 0}} end={{x: 8 + arrowEndPos.x, y: 8 + arrowEndPos.y}} />}
             </div>
         </div>
@@ -265,7 +317,8 @@ function Get({id}) {
                 <option key={id} value={id}>{id}</option>
             ))}
         </select>
-        を変数<input type="text" style={{width: "20%"}} onChange={variableChange} value={variable}/>に保存</p>
+        を
+        </p><p>変数<input type="text" style={{width: "20%"}} onChange={variableChange} value={variable}/>に保存</p>
         {validCheck() ? (
             <button className="btn btn-primary" onClick={confirm}>決定</button>
         ) : (
